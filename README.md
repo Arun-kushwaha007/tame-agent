@@ -62,7 +62,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## 📝 License
 
-[MIT License](LICENSE) © 2024-2026 Arun Kushwaha
+[MIT License](LICENSE) © 2026 Arun Kushwaha
 
 ## 🙏 Credits
 
