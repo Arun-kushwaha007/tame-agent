@@ -1,0 +1,19 @@
+{
+  "name": "eslint-plugin-tame-agent-svg",
+  "version": "1.0.0",
+  "description": "ESLint rules enforcing SVG-as-Component patterns and SVG accessibility",
+  "license": "MIT",
+  "type": "module",
+  "main": "index.mjs",
+  "peerDependencies": {
+    "eslint": ">=8.0.0"
+  },
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "svg",
+    "accessibility",
+    "react",
+    "jsx"
+  ]
+}
