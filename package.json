@@ -1,6 +1,6 @@
 {
   "name": "tame-agent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Battle-tested frontend governance rules, AI agent instructions, ESLint plugins & documentation standards for modern React/Next.js projects.",
   "type": "module",
   "bin": {
