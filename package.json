@@ -4,7 +4,7 @@
   "description": "Battle-tested frontend governance rules, AI agent instructions, ESLint plugins & documentation standards for modern React/Next.js projects.",
   "type": "module",
   "bin": {
-    "tame-agent": "./cli/index.mjs"
+    "tame-agent": "cli/index.mjs"
   },
   "files": [
     "cli/",
@@ -32,7 +32,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Arun-kushwaha007/tame-agent"
+    "url": "git+https://github.com/Arun-kushwaha007/tame-agent.git"
   },
   "author": "Arun Kushwaha",
   "license": "MIT",
