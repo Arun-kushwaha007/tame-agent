@@ -1,0 +1,42 @@
+{
+  "name": "tame-agent",
+  "version": "1.0.0",
+  "description": "Battle-tested frontend governance rules, AI agent instructions, ESLint plugins & documentation standards for modern React/Next.js projects.",
+  "type": "module",
+  "bin": {
+    "tame-agent": "./cli/index.mjs"
+  },
+  "files": [
+    "cli/",
+    "rules/",
+    "eslint-plugin/",
+    "skills/",
+    "templates/",
+    "docs/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "eslint",
+    "frontend",
+    "governance",
+    "ai-agent",
+    "react",
+    "nextjs",
+    "accessibility",
+    "svg",
+    "design-system",
+    "tailwind",
+    "radix-ui",
+    "developer-experience"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Arun-kushwaha007/tame-agent"
+  },
+  "author": "Arun Kushwaha",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
