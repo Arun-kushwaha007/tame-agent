@@ -1,0 +1,12 @@
+name: web-technical-seo
+description: Technical SEO engineering patterns - canonical URL governance, metadata factory, multi-layer canonical defense, dynamic XML sitemaps, robots.txt directives, 301/308 redirects, HTTP status codes, structured data JSON-LD schema governance
+category: seo
+tags:
+  - seo
+  - nextjs
+  - canonical
+  - metadata
+  - sitemaps
+  - robots
+  - json-ld
+  - status-codes

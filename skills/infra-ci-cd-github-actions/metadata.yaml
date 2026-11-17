@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/agents-inc/cli/main/src/schemas/metadata.schema.json
+category: infra-ci-cd
+slug: github-actions
+domain: infra
+author: "@vince"
+displayName: GitHub Actions
+cliDescription: CI/CD pipelines
+usageGuidance: Use when configuring CI/CD pipelines, GitHub workflows, or deployment automation.

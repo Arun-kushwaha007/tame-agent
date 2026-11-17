@@ -1,0 +1,8 @@
+name: tame-agent-governance
+description: Frontend governance rules and engineering standards enforcement
+category: governance
+tags:
+  - governance
+  - engineering-standards
+  - tame-agent
+  - rules

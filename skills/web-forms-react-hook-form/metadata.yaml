@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/agents-inc/cli/main/src/schemas/metadata.schema.json
+category: web-form-library
+slug: react-hook-form
+domain: web
+author: "@vince"
+displayName: React Hook Form
+cliDescription: React form handling
+usageGuidance: Use when building forms in React with validation, field arrays, or Controller.
