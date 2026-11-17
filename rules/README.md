@@ -10,8 +10,14 @@ This directory contains the universal, reusable engineering and governance rules
 - **[10-architecture.md](./10-architecture.md)**
   *When to use*: When designing component trees, API clients, state management, and file constraints.
 
+- **[15-token-optimization.md](./15-token-optimization.md)**
+  *When to use*: When executing agent workflows, demanding terse output, preserving context, and managing subagents.
+
 - **[20-ui-design-system.md](./20-ui-design-system.md)**
   *When to use*: When styling components, building responsive layouts, and establishing design token usage.
+
+- **[25-technical-seo.md](./25-technical-seo.md)**
+  *When to use*: When creating routes, managing canonical URLs, generating sitemaps, handling redirects, and governing JSON-LD schemas.
 
 - **[30-svg-management.md](./30-svg-management.md)**
   *When to use*: When adding icons, vectors, and defining SVG accessibility.
