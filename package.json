@@ -1,7 +1,7 @@
 {
   "name": "tame-agent",
-  "version": "1.0.1",
-  "description": "Battle-tested frontend governance rules, AI agent instructions, ESLint plugins & documentation standards for modern React/Next.js projects.",
+  "version": "1.1.0",
+  "description": "Battle-tested frontend governance rules, AI agent instructions, 20+ modular skills, Technical SEO SOP, ESLint plugins & documentation standards for modern React/Next.js projects.",
   "type": "module",
   "bin": {
     "tame-agent": "cli/index.mjs"
@@ -12,9 +12,11 @@
     "eslint-plugin/",
     "skills/",
     "templates/",
+    "templates/agents/",
     "docs/",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CONTRIBUTING.md"
   ],
   "keywords": [
     "eslint",
@@ -28,6 +30,10 @@
     "design-system",
     "tailwind",
     "radix-ui",
+    "seo",
+    "technical-seo",
+    "canonical",
+    "agent-skills",
     "developer-experience"
   ],
   "repository": {
