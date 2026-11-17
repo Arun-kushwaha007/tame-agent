@@ -1,8 +1,8 @@
-# eslint-plugin-tame-agent-svg
+# eslint-plugin-tame-agent
 
-ESLint rules enforcing SVG-as-Component patterns and SVG accessibility, designed for the `tame-agent` package.
+ESLint rules enforcing frontend design governance, SVG-as-Component patterns, and Technical SEO canonical domain standards, designed for the `tame-agent` package.
 
-These rules improve accessibility, maintainability, and reusability of SVG components.
+These rules improve accessibility, maintainability, search equity, and architectural consistency.
 
 ## Rules
 
@@ -13,7 +13,7 @@ Exceptions: Files ending in `-graphic.tsx`, `-graphic.jsx`, `-chart.tsx`, or `-c
 
 **Configuration:**
 ```js
-"tame-agent-svg/no-raw-inline-svg": ["warn", { "iconsDir": "src/components/ui/icons/" }]
+"tame-agent/no-raw-inline-svg": ["warn", { "iconsDir": "src/components/ui/icons/" }]
 ```
 
 ### 2. `svg-aria-required` (Error)
@@ -21,21 +21,44 @@ Ensures every `<svg>` element has explicitly declared accessibility intent. An `
 - `aria-hidden="true"` (for decorative SVGs)
 - `role="img"` AND `aria-label="..."` (for semantic SVGs)
 
+**Configuration:**
+```js
+"tame-agent/svg-aria-required": "error"
+```
+
+### 3. `canonical-domain` (Problem / Fixable)
+Enforces the Technical SEO Canonical Domain Mandate. Disallows naked non-canonical domain variants or protocol mismatches in string literals and template literals, preventing search equity dilution. Automatically fixes non-canonical URLs to the configured canonical domain.
+
+**Configuration:**
+```js
+"tame-agent/canonical-domain": [
+  "error",
+  {
+    "canonicalDomain": "https://www.example.com",
+    "exemptPatterns": ["/tests/", "/eslint-rules/", "proxy.ts", "middleware.ts"]
+  }
+]
+```
+
 ## Installation & Usage
 
 Add the plugin to your `eslint.config.js` or `eslint.config.mjs` (Flat Config):
 
 ```js
-import tameAgentSvgPlugin from "eslint-plugin-tame-agent-svg";
+import tameAgentPlugin from "./eslint-rules/index.mjs"; // or from npm package
 
 export default [
   {
     plugins: {
-      "tame-agent-svg": tameAgentSvgPlugin
+      "tame-agent": tameAgentPlugin
     },
     rules: {
-      "tame-agent-svg/no-raw-inline-svg": ["warn", { "iconsDir": "src/components/ui/icons/" }],
-      "tame-agent-svg/svg-aria-required": "error"
+      "tame-agent/no-raw-inline-svg": ["warn", { "iconsDir": "src/components/ui/icons/" }],
+      "tame-agent/svg-aria-required": "error",
+      "tame-agent/canonical-domain": [
+        "error",
+        { "canonicalDomain": "https://www.example.com" }
+      ]
     }
   }
 ];

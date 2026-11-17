@@ -1,7 +1,7 @@
 /**
  * eslint-plugin/index.mjs
  * 
- * Enforces the tame-agent SVG-as-Component standard:
+ * Enforces tame-agent frontend and technical SEO governance standards:
  * 
  * 1. no-raw-inline-svg [warn]
  *    Raw <svg> JSX elements must not appear outside a configurable icons directory.
@@ -12,11 +12,16 @@
  *    Every <svg> element must carry EITHER:
  *      - aria-hidden="true" (decorative)
  *      - role="img" + aria-label="…" (meaningful)
+ * 
+ * 3. canonical-domain [problem]
+ *    Enforces the Technical SEO Canonical Domain Mandate.
+ *    Disallows naked non-canonical domain variants or protocol mismatches in string literals.
+ *    Automatically fixes them to the configured canonical domain.
  */
 
 /** Normalise a file path to forward-slash form for consistent matching. */
 function toForwardSlash(p) {
-  return p.replace(/\\/g, "/");
+  return (p || "").replace(/\\/g, "/");
 }
 
 /** Check if the file is inside the allowed icons directory. */
@@ -57,7 +62,6 @@ const noRawInlineSvgRule = {
     ],
   },
   create(context) {
-    // context.getPhysicalFilename() is for ESLint 9+ compatibility (fallback to legacy)
     const filename = (context.getPhysicalFilename ? context.getPhysicalFilename() : context.getFilename?.()) ?? context.filename ?? "";
     const options = context.options[0] || {};
     const iconsDir = options.iconsDir || "src/components/ui/icons/";
@@ -132,7 +136,6 @@ const svgAriaRequiredRule = {
         const hasDynamicAriaHidden = ariaHiddenAttr && ariaHiddenAttr.value?.type === "JSXExpressionContainer" && ariaHiddenAttr.value.expression.type !== "Literal";
         const hasDynamicRole = roleAttr && roleAttr.value?.type === "JSXExpressionContainer" && roleAttr.value.expression.type !== "Literal";
 
-        // Dynamic values cannot be statically analyzed, so we skip
         if (hasDynamicAriaHidden || hasDynamicRole) return;
 
         if (!isDecorativeCorrect && !hasRoleImg) {
@@ -149,16 +152,122 @@ const svgAriaRequiredRule = {
 };
 
 // ---------------------------------------------------------------------------
-// Plugin export (ESLint flat-config compatible)
+// Rule 3: canonical-domain
 // ---------------------------------------------------------------------------
 
-export const tameAgentSvgPlugin = {
-  meta: { name: "tame-agent-svg", version: "1.0.0" },
-  rules: {
-    "no-raw-inline-svg": noRawInlineSvgRule,
-    "svg-aria-required": svgAriaRequiredRule,
+const canonicalDomainRule = {
+  meta: {
+    type: "problem",
+    docs: {
+      description: "Enforce canonical domain URLs and disallow naked or non-canonical domain variants.",
+      recommended: true,
+    },
+    fixable: "code",
+    schema: [
+      {
+        type: "object",
+        properties: {
+          canonicalDomain: {
+            type: "string", // e.g. "https://www.example.com"
+          },
+          disallowedPattern: {
+            type: "string", // custom regex string
+          },
+          exemptPatterns: {
+            type: "array",
+            items: { type: "string" },
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+    messages: {
+      prohibitedNonCanonical:
+        "Prohibited non-canonical URL '{{url}}'. Technical SEO SOP requires canonical '{{canonicalDomain}}' or relative path '/...'.",
+    },
+  },
+  create(context) {
+    const filename = (context.getPhysicalFilename ? context.getPhysicalFilename() : context.getFilename?.()) ?? context.filename ?? "";
+    const options = context.options[0] || {};
+    const canonicalDomain = options.canonicalDomain || "https://www.example.com";
+
+    let regex;
+    if (options.disallowedPattern) {
+      regex = new RegExp(options.disallowedPattern, "i");
+    } else {
+      try {
+        const parsed = new URL(canonicalDomain);
+        const host = parsed.hostname;
+        if (host.startsWith("www.")) {
+          const rootHost = host.slice(4).replace(/\./g, "\\.");
+          regex = new RegExp(`(?:https?:\\/\\/)(?!www\\.)${rootHost}`, "i");
+        } else {
+          const rootHost = host.replace(/\./g, "\\.");
+          regex = new RegExp(`(?:https?:\\/\\/)www\\.${rootHost}`, "i");
+        }
+      } catch {
+        return {};
+      }
+    }
+
+    const exempt = options.exemptPatterns || ["/tests/", "/eslint-rules/", "/eslint-plugin/", "proxy.ts", "middleware.ts"];
+    const normFile = toForwardSlash(filename);
+    if (exempt.some((p) => normFile.includes(p))) {
+      return {};
+    }
+
+    function checkValue(node, rawText, valueText) {
+      if (typeof valueText === "string" && regex.test(valueText)) {
+        context.report({
+          node,
+          messageId: "prohibitedNonCanonical",
+          data: { url: valueText, canonicalDomain },
+          fix(fixer) {
+            const fixed = rawText.replace(regex, canonicalDomain);
+            return fixer.replaceText(node, fixed);
+          },
+        });
+      }
+    }
+
+    return {
+      Literal(node) {
+        if (typeof node.value === "string") {
+          checkValue(node, node.raw, node.value);
+        }
+      },
+      TemplateLiteral(node) {
+        for (const quasi of node.quasis) {
+          if (regex.test(quasi.value.raw)) {
+            context.report({
+              node: quasi,
+              messageId: "prohibitedNonCanonical",
+              data: { url: quasi.value.raw, canonicalDomain },
+              fix(fixer) {
+                const fixed = quasi.value.raw.replace(regex, canonicalDomain);
+                return fixer.replaceText(quasi, fixed);
+              },
+            });
+          }
+        }
+      },
+    };
   },
 };
 
-export const helpingAgentSvgPlugin = tameAgentSvgPlugin;
-export default tameAgentSvgPlugin;
+// ---------------------------------------------------------------------------
+// Plugin export (ESLint flat-config compatible)
+// ---------------------------------------------------------------------------
+
+export const tameAgentPlugin = {
+  meta: { name: "tame-agent", version: "1.1.0" },
+  rules: {
+    "no-raw-inline-svg": noRawInlineSvgRule,
+    "svg-aria-required": svgAriaRequiredRule,
+    "canonical-domain": canonicalDomainRule,
+  },
+};
+
+export const tameAgentSvgPlugin = tameAgentPlugin;
+export const helpingAgentSvgPlugin = tameAgentPlugin;
+export default tameAgentPlugin;
