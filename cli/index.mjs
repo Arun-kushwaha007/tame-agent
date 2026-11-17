@@ -32,16 +32,17 @@ function error(msg) { console.error(`${colors.red}${colors.bold}✖${colors.rese
 
 function printHelp() {
   log(`
-${colors.cyan}${colors.bold}tame-agent${colors.reset} - Frontend Governance & AI Agent Rules
+${colors.cyan}${colors.bold}tame-agent${colors.reset} - Frontend Governance, Technical SEO & AI Agent Rules
 
 ${colors.bold}Usage:${colors.reset}
   npx tame-agent <command> [options]
 
 ${colors.bold}Commands:${colors.reset}
-  init          Initialize tame-agent in your project (copies all rules, skills, and eslint plugins)
+  init          Initialize tame-agent in your project (copies all rules, skills, agents, and eslint plugins)
   add-rules     Copy only the agent rules to .agents/rules/
-  add-eslint    Copy only the ESLint plugin
-  add-skills    Copy only the skills to .agents/skills/
+  add-skills    Copy all modular skills (20+ skills including Next.js, React, SEO) to .agents/skills/
+  add-agents    Copy specialist agent personas (SEO Specialist, Code Reviewer, a11y) to .agents/agents/
+  add-eslint    Copy only the ESLint plugin to eslint-rules/
   help          Show this help message
 
 ${colors.bold}Options:${colors.reset}
@@ -108,21 +109,29 @@ function init() {
       warn('Skipped existing file: AGENTS.md');
     }
   } else {
-    // Fallback if template doesn't exist yet
     if (!fs.existsSync(agentsMdDest) || force) {
       fs.writeFileSync(agentsMdDest, '# AI Agent Instructions\n\nReference the rules in `.agents/rules/`.\n');
       success('Created: AGENTS.md');
     }
   }
 
-  // 3. Copy ESLint plugin
+  // 3. Copy specialist agent personas
+  info('Setting up specialist agent personas...');
+  const agentsSrc = path.join(PKG_ROOT, 'templates', 'agents');
+  if (fs.existsSync(agentsSrc)) {
+    const agentsDest = path.join(CWD, '.agents', 'agents');
+    ensureDir(agentsDest);
+    copyDirContents(agentsSrc, agentsDest);
+  }
+
+  // 4. Copy ESLint plugin
   info('Setting up ESLint plugin...');
   const eslintSrc = path.join(PKG_ROOT, 'eslint-plugin');
-  const eslintDest = path.join(CWD, 'eslint-rules'); // typical place for local plugins or generic output
+  const eslintDest = path.join(CWD, 'eslint-rules');
   ensureDir(eslintDest);
   copyDirContents(eslintSrc, eslintDest);
 
-  // 4. Copy Skills
+  // 5. Copy Skills
   info('Setting up skills...');
   const skillsSrc = path.join(PKG_ROOT, 'skills');
   const skillsDest = path.join(CWD, '.agents', 'skills');
@@ -133,7 +142,8 @@ function init() {
   log(`\nNext steps:`);
   log(`1. Review the generated rules in ${colors.cyan}.agents/rules/${colors.reset}`);
   log(`2. Update ${colors.cyan}AGENTS.md${colors.reset} to fit your project`);
-  log(`3. Configure ESLint to use the local rules in ${colors.cyan}eslint-rules/${colors.reset}\n`);
+  log(`3. Check specialist agents in ${colors.cyan}.agents/agents/${colors.reset} (e.g. seo-specialist.md)`);
+  log(`4. Configure ESLint to use the local rules in ${colors.cyan}eslint-rules/${colors.reset}\n`);
 }
 
 function addRules() {
@@ -143,6 +153,15 @@ function addRules() {
   ensureDir(rulesDest);
   copyDirContents(rulesSrc, rulesDest);
   success('Rules added successfully.');
+}
+
+function addAgents() {
+  info('Adding specialist agent personas...');
+  const agentsSrc = path.join(PKG_ROOT, 'templates', 'agents');
+  const agentsDest = path.join(CWD, '.agents', 'agents');
+  ensureDir(agentsDest);
+  copyDirContents(agentsSrc, agentsDest);
+  success('Agents added successfully.');
 }
 
 function addEslint() {
@@ -170,6 +189,9 @@ async function run() {
       break;
     case 'add-rules':
       addRules();
+      break;
+    case 'add-agents':
+      addAgents();
       break;
     case 'add-eslint':
       addEslint();
